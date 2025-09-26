@@ -1,103 +1,132 @@
+"use client";
+import UpperNav from "./Components/UpperNav";
+import LowerNav from "./Components/LowerNav";
+import { data } from "../../public/assets";
 import Image from "next/image";
+import { useGSAP } from "@gsap/react";
+import { useRef, useState, useEffect } from "react";
+import gsap from "gsap";
+import OurStory from "./Components/OurStory";
+import Card from "./Components/Card";
+import BestSeller from "./Components/BestSeller";
+import Footer from "./Components/Footer";
+import NewProduct from "./Components/NewProduct";
+import DiscoverCollection from "./Components/DiscoverCollection";
+import RefineCasual from "./Components/Refine";
+import Testimonilas from "./Components/Testimonilas";
+import Blogs from "./Components/Blogs";
+import Services from "./Components/Services";
+import Pictures from "./Components/Pictures";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const imgRef = useRef(null);
+  const [count, setCount] = useState<number>(0);
+  const [fade, setFade] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    setFade(true);
+    const timeout = setTimeout(() => setFade(false), 200);
+    return () => clearTimeout(timeout);
+  }, [count]);
+
+  useGSAP(() => {
+    gsap.fromTo(
+      imgRef.current,
+      { scale: 2, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 1.2, ease: "power3.out" }
+    );
+  }, []);
+
+  useEffect(() => {
+    gsap.fromTo(
+      ".hh",
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }
+    );
+  }, [count]);
+
+  useEffect(() => {
+    gsap.fromTo(
+      ".heading",
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 2, ease: "power3.out", stagger: 1 }
+    );
+  }, []);
+
+  const images = [data.homeIma2, data.homeIma1, data.homeIma3];
+
+  return (
+    <div className="">
+      {/* ✅ Navbars outside of hero section */}
+      <UpperNav />
+      <LowerNav />
+
+      {/* ✅ Hero Section (no overflow-hidden now) */}
+      <section className="h-screen overflow-clip relative w-screen">
+        {/* Background Image */}
+        <Image
+          key={count}
+          src={images[count]}
+          alt={`Home${count + 1}`}
+          ref={imgRef}
+          className={`absolute top-0 left-0 h-full w-full object-cover transition-opacity duration-500 ${
+            fade ? "opacity-0" : "opacity-100"
+          }`}
+        />
+
+        {/* Foreground Content */}
+        <div className="absolute bottom-10 mx-10 gap-20 flex items-end">
+          <div>
+            <h1 className="text-white text-7xl font-medium leading-tight">
+              <span className="list-none heading">Bold Layers,</span> <br />
+              <span className="list-none heading">Confident Looks.</span>
+            </h1>
+
+            <div className="flex items-end gap-10">
+              <span className="hh h-5 w-5 p-1 flex justify-center items-center">
+                <span className="text-xl text-white font-bold">
+                  0{count + 1}
+                </span>
+              </span>
+              <div className="flex gap-5">
+                {images.map((img, idx) => (
+                  <Image
+                    key={idx}
+                    className="rounded-lg border-gray-400 border object-cover h-[80px] w-[120px] cursor-pointer transition-transform duration-300 hover:scale-105"
+                    src={img}
+                    alt={`thumb-${idx}`}
+                    height={100}
+                    width={120}
+                    onMouseEnter={() => setCount(idx)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side Content */}
+          <div>
+            <h1 className="text-white pb-4 font-light text-lg">
+              Upgrade your wardrobe with <br /> crisp, versatile T-shirts
+            </h1>
+            <button className="text-[#33383c] py-2 px-4 rounded-lg bg-[#e3e3e3] hover:bg-[#e3e3e399] transition-all duration-300 hover:scale-105">
+              Browse Collection
+            </button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+
+      {/* Sections Below */}
+      {/* <OurStory /> */}
+      <BestSeller/>
+      <NewProduct/>
+      <DiscoverCollection/>
+      <RefineCasual/>
+      <Testimonilas/>
+      <Blogs/>
+      <Services/>
+      <Pictures/>
+      <Footer/>
     </div>
   );
 }
